@@ -441,7 +441,7 @@ function getCalculationResult(IDArray, returnOnlyStatusBool){
     }    
     
     $client = new GuzzleHTTP\Client()
-    $res = $client -> request("GET", ($this -> BaseURL) + $endpoint + "?id=" json_encode($IDArray) + "&returnOnlyStatusBool=" + json_encode($returnOnlyStatusBool), ["headers" => array("Accept" => "application/json", "Content-Type" => "application/json"), "auth" => array($this -> apiUserName => $this -> apiPassword)])
+    $res = $client -> request("GET", ($this -> BaseURL) + $endpoint + "?id=" + json_encode($IDArray) + "&returnOnlyStatusBool=" + json_encode($returnOnlyStatusBool), ["headers" => array("Accept" => "application/json", "Content-Type" => "application/json"), "auth" => array($this -> apiUserName => $this -> apiPassword)])
     
     if(($this -> debugging) == True){
       echo $res -> getStatusCode()
@@ -464,8 +464,8 @@ function getCalculationResult(IDArray, returnOnlyStatusBool){
 # @function getCalculationVisualization()
 # @param {array} id ID of calculation to return result/check String
 # @param {boolean} returnBase64Bool Return Base64 String or image buffer as string?
-# @param {number} width target width of visualization file
-# @param {number} height target height of visualization file
+# @param {integer} width target width of visualization file
+# @param {integer} height target height of visualization file
 # @returns {Response} This returns the GetCalculationVisualization Result. The body is in binary format.
 
 function getCalculationVisualization(id, returnBase64Bool, width, height){
@@ -476,9 +476,9 @@ function getCalculationVisualization(id, returnBase64Bool, width, height){
       throw new Exception("Cobble BaseURL must end on slash!")
     }
        
-    $keyArray = array(1 => "IDArray", 2 => "returnOnlyStatusBool", 3 => "Your API Username", 4 => "Your Api Token")
-    $valueArray = array(1 => $IDArray, 2 => $returnOnlyStatusBool, 3 => ($this -> apiUserName), 4 => ($this -> apiToken))
-    $typeArray = array(1 => "array", 2 => "boolean", 3 => "string", 4 => "string")
+    $keyArray = array(1 => "id", 2 => "returnBase64Bool", 3 => "width", 4 => "height", 5 => "Your API Username", 6 => "Your Api Token")
+    $valueArray = array(1 => $id, 2 => $returnBase64Bool, 3 => $width, 4 => $height, 5 => ($this -> apiUserName), 6 => ($this -> apiToken))
+    $typeArray = array(1 => "string", 2 => "boolean", 3 => "integer", 4 => "integer", 5 => "string", 6 => "string")
        
     try{
       checkTypeOfParameter($valueArray, $typeArray)
@@ -490,14 +490,15 @@ function getCalculationVisualization(id, returnBase64Bool, width, height){
         throw new Exception($e -> GetMessage())
     }
     
-    $invalidCalculationList = checkIDArrayForInvalidValues($IDArray)
+    $invalidCalculationList = checkIDArrayForInvalidValues([$id])
       
     if(count($invalidCalculationList) > 0){
-      throw new Exception("You provided invalid Calculation IDs. Please check your input!")
+      throw new Exception("You provided an invalid Calculation ID. Please check your input!")
     }    
     
     $client = new GuzzleHTTP\Client()
-    $res = $client -> request("GET", ($this -> BaseURL) + $endpoint + "?id=" json_encode($IDArray) + "&returnOnlyStatusBool=" + json_encode($returnOnlyStatusBool), ["headers" => array("Accept" => "application/json", "Content-Type" => "application/json"), "auth" => array($this -> apiUserName => $this -> apiPassword)])
+      
+    $res = $client -> request("GET", ($this -> BaseURL) + $endpoint + "?id=" + json_encode($IDArray) + "&returnOnlyStatusBool=" + json_encode($returnOnlyStatusBool), ["headers" => array("Accept" => "application/json", "Content-Type" => "application/json"), "auth" => array($this -> apiUserName => $this -> apiPassword)])
     
     if(($this -> debugging) == True){
       echo $res -> getStatusCode()
