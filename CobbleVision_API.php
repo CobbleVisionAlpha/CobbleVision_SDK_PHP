@@ -1,6 +1,12 @@
 <?php
 
+#
+# Driver for MongoDB https://docs.mongodb.com/drivers/php
+# Guzzle HTTP - https://docs.guzzlephp.org/en/stable/
+
+#PRENOTE: YOU MIGHT HAVE TO REQUIRE SOME MORE PHP MODULES
 use GuzzleHttp\Client;
+use MongoDB;
 
 ###################################################
 #Preparation of Variables and Environment Settings.
@@ -498,7 +504,7 @@ function getCalculationVisualization(id, returnBase64Bool, width, height){
     
     $client = new GuzzleHTTP\Client()
       
-    $res = $client -> request("GET", ($this -> BaseURL) + $endpoint + "?id=" + json_encode($IDArray) + "&returnOnlyStatusBool=" + json_encode($returnOnlyStatusBool), ["headers" => array("Accept" => "application/json", "Content-Type" => "application/json"), "auth" => array($this -> apiUserName => $this -> apiPassword)])
+    $res = $client -> request("GET", ($this -> BaseURL) + $endpoint + "?id=" + id + "&returnBase64Bool=" + json_encode($returnBase64Bool) + "&width=" + parse_str(width) + "&height=" + parse_str(height), ["headers" => array("Accept" => "application/json", "Content-Type" => "application/json"), "auth" => array($this -> apiUserName => $this -> apiPassword)])
     
     if(($this -> debugging) == True){
       echo $res -> getStatusCode()
@@ -515,5 +521,46 @@ function getCalculationVisualization(id, returnBase64Bool, width, height){
      throw new Exception($e -> GetMessage())
    }   
 } 
+  
+  
+  
+###################################################
+## Helper Functions
+###################################################
+
+# TypeChecking of Values
+# @sync
+# @function checktypeOfParameter()
+# @param {array} targetArray Array of values to be checked
+# @param {array} typeArray Array of types in strings to be checked against
+# @returns {boolean} Success of Check
+function checktypeOfParameter(targetArray, assertTypeArray){
+  try{
+    for($i = 0; i<count($targetArray); i++){
+      if(gettype($targetArray[i]) != $assertTypeArray[i]){
+        return false;
+      }
+    }
+    return true
+  }catch(Exception $e){
+    throw new Exception("Type Check Failed!")
+  }
+}
+
+# Check Array of Mongo IDs for Invalid Values
+# @sync
+# @function checkIDArrayForInvalidValues()
+# @param {array} IDArray Array of Mongo IDs
+# @returns {boolean} Success of Check
+function checkIDArrayForInvalidValues(IDArray){
+  try{
+    for($i = 0; i<count($IDArray); i++){
+      new MongoDB\BSON\ObjectID($idArray[i])
+    }
+    return true
+  }catch(Exception $e){
+    throw new Exception("Mongo ID Check Failed")
+  }
+}
   
 >
