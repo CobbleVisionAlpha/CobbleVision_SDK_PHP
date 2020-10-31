@@ -468,7 +468,7 @@ function getCalculationResult(IDArray, returnOnlyStatusBool){
 # Request your calculation result by ID with the CobbleVision API. Returns a response object with body, response and headers properties, deducted from npm request module;
 # @async
 # @function getCalculationVisualization()
-# @param {array} id ID of calculation to return result/check String
+# @param {string} id ID of calculation to return result/check String
 # @param {boolean} returnBase64Bool Return Base64 String or image buffer as string?
 # @param {integer} width target width of visualization file
 # @param {integer} height target height of visualization file
