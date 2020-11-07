@@ -557,7 +557,7 @@ function checkIDArrayForInvalidValues(IDArray){
     for($i = 0; i<count($IDArray); i++){
       new MongoDB\BSON\ObjectID($idArray[i])
     }
-    return true
+    return (array(1 => $IDArray[$s]))
   }catch(Exception $e){
     throw new Exception("Mongo ID Check Failed")
   }
